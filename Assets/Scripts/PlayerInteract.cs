@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerInteract : MonoBehaviour
 {
     [Header("Settings")]
-    public float interactRange = 3f;
+    public float interactRange = 4.5f; // diperbesar sesuai ukuran karakter
 
     [Header("UI")]
     public MoneyUI moneyUI;
@@ -13,16 +13,20 @@ public class PlayerInteract : MonoBehaviour
 
     void Update()
     {
-        if (!Keyboard.current.eKey.wasPressedThisFrame) return;
-
         NpcController nearest = FindNearestInteractableNpc();
-        if (nearest == null) return;
 
-        MoneySystem.Instance.AddMoney(PARKING_FEE);
-        nearest.PayAndLeave();
-
+        // Prompt "Pencet E" muncul hanya kalau ada NPC eligible DALAM range
         if (moneyUI != null)
-            moneyUI.ShowCollect(PARKING_FEE);
+            moneyUI.SetPrompt(nearest != null);
+
+        // Tagih
+        if (nearest != null && Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            MoneySystem.Instance.AddMoney(PARKING_FEE);
+            nearest.PayAndLeave();
+            if (moneyUI != null)
+                moneyUI.ShowCollect(PARKING_FEE);
+        }
     }
 
     NpcController FindNearestInteractableNpc()

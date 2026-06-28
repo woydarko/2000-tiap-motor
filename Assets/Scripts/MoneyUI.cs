@@ -17,21 +17,13 @@ public class MoneyUI : MonoBehaviour
         // Update total uang
         if (totalMoneyText != null && MoneySystem.Instance != null)
             totalMoneyText.text = $"Rp {MoneySystem.Instance.TotalMoney:N0}";
+    }
 
-        // Tampilkan prompt E jika ada NPC bisa diinteraksi
-        bool showPrompt = false;
-        if (interactPrompt != null)
-        {
-            foreach (var npc in FindObjectsByType<NpcController>(FindObjectsSortMode.None))
-            {
-                if (npc.CanInteract())
-                {
-                    showPrompt = true;
-                    break;
-                }
-            }
-            interactPrompt.SetActive(showPrompt);
-        }
+    // Dikontrol PlayerInteract berdasarkan jarak + eligibility
+    public void SetPrompt(bool show)
+    {
+        if (interactPrompt != null && interactPrompt.activeSelf != show)
+            interactPrompt.SetActive(show);
     }
 
     public void ShowCollect(int amount)
